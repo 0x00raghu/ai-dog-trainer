@@ -1,7 +1,7 @@
 from openai import OpenAI
 
-client = OpenAI()
-client.api_key = "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"
+client = OpenAI(api_key="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")
+
 
 def generate_response(caption, previous_response):
     prompt = f"Your job is to check if the person followed the previous instruction and give new instruction if they followed it. \n" \
