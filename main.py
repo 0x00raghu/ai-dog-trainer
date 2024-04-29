@@ -5,6 +5,7 @@ from image_processing import convert_frame_to_pil_image
 from caption_generation_gpt4 import generate_caption
 from openai_response_generation import generate_response
 from text_to_voice import text_to_speech
+from reward import rotate_90_degrees
 
 # create VideoCapture object for camera feed
 cap = cv2.VideoCapture(0)
@@ -29,9 +30,14 @@ def process_frame(frame):
     caption = generate_caption(pil_image)  
     print(time.time()-current_time)
     print(caption)
-    response = generate_response(caption, previous_response)  # generate response for caption and previous response
+    response_data = generate_response(caption, previous_response)  # generate response for caption and previous response
+    response = response_data['instruction']  # Extract instruction from response
+    followed = response_data['followed']  # Extract followed status    
     print(time.time()-current_time)    
     print(response)
+    print(followed)
+    if followed == '1':
+        rotate_90_degrees() # do this and text_to_speech together
     text_to_speech(response)
     if caption:
         #previous_captions.append(caption) # add caption to previous captions list

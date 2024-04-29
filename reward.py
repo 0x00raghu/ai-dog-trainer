@@ -39,9 +39,8 @@ def cleanup():
     in3.off()
     in4.off()
 
-try:
-    # Infinite loop to rotate the stepper motor
-    while True:
+def rotate_90_degrees():    
+    try:
         for _ in range(steps_per_90_degrees):
             for pin_index, pin in enumerate(motor_pins):
                 if step_sequence[motor_step_counter][pin_index] == 1:
@@ -58,8 +57,5 @@ try:
             time.sleep(step_sleep)
         # Pause or do something else between 90 degree steps if necessary
         # time.sleep(1)  # Uncomment to add a pause
-
-except KeyboardInterrupt:
-    cleanup()
-
-cleanup()
+    finally:
+        cleanup()
