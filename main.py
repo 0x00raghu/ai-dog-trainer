@@ -72,9 +72,14 @@ def display_frame(frame):
         flipped_frame = cv2.flip(frame, 1) # Flip the frame horizontally
         cv2.imshow('frame', flipped_frame)
 
+def introduce():
+    intro_text = "This is John Wick and I'm here to train you to sit and stand. Find a chair and start by sitting down. Follow my instructions to get skittles."
+    text_to_speech(intro_text)
+
 #The LOOOOOOP
 def main_loop():
     global last_process_time
+    introduce()
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -82,7 +87,7 @@ def main_loop():
             break
 
         current_time = time.time()
-        if current_time - last_process_time >= 15:
+        if current_time - last_process_time >= 20:
             t = threading.Thread(target=process_frame, args=(frame,))
             t.start()
             last_process_time = current_time
