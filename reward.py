@@ -8,11 +8,11 @@ in3 = OutputDevice(27)
 in4 = OutputDevice(22)
 
 # Sleep time configuration
-step_sleep = 0.002
+step_sleep = 0.001
 
 # Step count (number of steps for a 90 degree rotation)
 # Assuming 4096 steps for a full 360 degree rotation
-steps_per_90_degrees = 4096 // 4
+steps_per_60_degrees = 4096 // 6
 
 # Direction: True for clockwise, False for counter-clockwise
 direction = False
@@ -39,10 +39,10 @@ def cleanup():
     in3.off()
     in4.off()
 
-def rotate_90_degrees():    
+def rotate_60_degrees():    
     global motor_step_counter
     try:
-        for _ in range(steps_per_90_degrees):
+        for _ in range(steps_per_60_degrees):
             for pin_index, pin in enumerate(motor_pins):
                 if step_sequence[motor_step_counter][pin_index] == 1:
                     pin.on()

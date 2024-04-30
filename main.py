@@ -5,7 +5,7 @@ from image_processing import convert_frame_to_pil_image
 from caption_generation_firellava_13B import generate_caption
 from openai_response_generation import generate_response
 from text_to_voice import text_to_speech
-from reward import rotate_90_degrees
+from reward import rotate_60_degrees
 
 # create VideoCapture object for camera feed
 cap = cv2.VideoCapture(0)
@@ -37,9 +37,16 @@ def process_frame(frame):
     print(response)
     print(followed)
     if followed == 1:
-        rotate_90_degrees() # do this and text_to_speech together
         print("rotating")
-    text_to_speech(response)
+        rotate_thread = threading.Thread(target=rotate_60_degrees)
+        rotate_thread.start()
+
+    speech_thread = threading.Thread(target=text_to_speech, args=(response,))
+    speech_thread.start()
+
+    if followed == 1:
+        rotate_thread.join()  # Wait for rotation to complete if it was started
+    speech_thread.join()  # Wait for speech to complete
     if caption:
         #previous_captions.append(caption) # add caption to previous captions list
         #if len(previous_captions) > 3: # limit previous captions list to 10 items
@@ -75,7 +82,7 @@ def main_loop():
             break
 
         current_time = time.time()
-        if current_time - last_process_time >= 20:
+        if current_time - last_process_time >= 15:
             t = threading.Thread(target=process_frame, args=(frame,))
             t.start()
             last_process_time = current_time

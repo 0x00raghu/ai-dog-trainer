@@ -7,5 +7,5 @@ client = ElevenLabs(
 
 
 def text_to_speech(text):
-    audio = client.generate(text=text, voice="y6Ao4Y93UrnTbmzdVlFc")
+    audio = client.generate(text=text, voice="MmpYX2YKGFU5c1jMMF1q")
     play(audio)
