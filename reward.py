@@ -40,6 +40,7 @@ def cleanup():
     in4.off()
 
 def rotate_90_degrees():    
+    global motor_step_counter
     try:
         for _ in range(steps_per_90_degrees):
             for pin_index, pin in enumerate(motor_pins):

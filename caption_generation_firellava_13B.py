@@ -11,7 +11,7 @@ def generate_caption(pil_image):
     global previous_caption
     try:
         image_url = upload_image_and_get_url(pil_image, "dogtoyimages", "testfolder/image.jpeg")  
-        prompt = "Describe the image"
+        prompt = "is the person in the image siiting or standing. keep it brief. guess even if you're not sure"
         #print('I')
         completion = fireworks.client.ChatCompletion.create(
             model="accounts/fireworks/models/firellava-13b",

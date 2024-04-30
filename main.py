@@ -2,7 +2,7 @@ import cv2
 import time
 import threading
 from image_processing import convert_frame_to_pil_image
-from caption_generation_gpt4 import generate_caption
+from caption_generation_firellava_13B import generate_caption
 from openai_response_generation import generate_response
 from text_to_voice import text_to_speech
 from reward import rotate_90_degrees
@@ -36,8 +36,9 @@ def process_frame(frame):
     print(time.time()-current_time)    
     print(response)
     print(followed)
-    if followed == '1':
+    if followed == 1:
         rotate_90_degrees() # do this and text_to_speech together
+        print("rotating")
     text_to_speech(response)
     if caption:
         #previous_captions.append(caption) # add caption to previous captions list
