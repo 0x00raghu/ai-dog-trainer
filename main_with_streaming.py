@@ -6,9 +6,11 @@ from image_processing import convert_frame_to_pil_image
 # from response_generation_legacy import generate_response
 from response_generation import text_to_speech
 from response_generation import next_instruction
-from response_generation import appreciate
+from response_generation_with_streaming import appreciate
 from image_understanding import detect_frame
+import asyncio
 from motor import rotate_60_degrees
+
 
 # create VideoCapture object for camera feed
 cap = cv2.VideoCapture(0)
@@ -71,14 +73,12 @@ def detect(previous_instruction):
             print("ordq error")
             break    
 
-def reward(previous_instruction):
+async def reward(previous_instruction):
     print("rotating")
     rotate_thread = threading.Thread(target=rotate_60_degrees)
     rotate_thread.start()    
-    appreciate_thread = threading.Thread(target=appreciate, args = (previous_instruction,))
-    appreciate_thread.start()
+    await appreciate(previous_instruction)  # Await the coroutine directly
     rotate_thread.join()  # Wait for rotation to complete
-    appreciate_thread.join()
 
 #The LOOOOOOP
 def main():
@@ -90,7 +90,7 @@ def main():
         detect(previous_instruction) # detect if the dog followed the instruction
         print("ended detection")
         print("starting reward")
-        reward(previous_instruction) # drop treat + appreciate (implement streaming)
+        asyncio.run(reward(previous_instruction)) # drop treat + appreciate (implement streaming)
         print("ending reward")
         time.sleep(3) # give time for grabbing the treat and prepare for the next instruction
         is_followed = 0
