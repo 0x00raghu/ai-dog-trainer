@@ -17,6 +17,8 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 288)
 
 # initialize variable for tracking processing times
 last_process_time = time.time()
+last_process_time_repeat_instruction = time.time()
+
 # last_generation_time = time.time()
 # previous_caption = ""  # initialize variables for tracking previous captions and responses
 # previous_response = ""
@@ -48,16 +50,17 @@ def display_frame(frame):
 
 
 def introduce():
-    intro_text = "This is John Wick and I'm here to train you to sit and stand. Find a chair and start by sitting down. Follow my instructions to get skittles."
+    intro_text = "Hi Toffee. Here's a Treat. Sit."
     text_to_speech(intro_text)
 
 def detect(previous_instruction):
-    global last_process_time, is_followed
+    global last_process_time, is_followed, last_process_time_repeat_instruction
     while is_followed == 0: # loop until person/dog follows the instruction
         ret, frame = cap.read()
         if not ret:
             print("Error capturing frame, exiting.")
             break
+
 
         current_time = time.time()
         if current_time - last_process_time >= 0.4:
@@ -65,11 +68,19 @@ def detect(previous_instruction):
             t.start()
             last_process_time = current_time
 
+        if current_time - last_process_time_repeat_instruction >= 5:
+            t2 = threading.Thread(target=repeat_instruction, args=(previous_instruction,))
+            t2.start()
+            last_process_time_repeat_instruction = current_time
+
         display_frame(frame)
 
         if cv2.waitKey(1) == ord('q'):
             print("ordq error")
             break    
+
+def repeat_instruction(previous_instruction):
+    text_to_speech(previous_instruction)
 
 def reward(previous_instruction):
     print("rotating")
@@ -84,7 +95,7 @@ def reward(previous_instruction):
 def main():
     global is_followed    
     introduce() # intro and first instruction
-    previous_instruction = "Sit down."
+    previous_instruction = "Sit."
     while True:
         print("starting detection")
         detect(previous_instruction) # detect if the dog followed the instruction
@@ -92,7 +103,7 @@ def main():
         print("starting reward")
         reward(previous_instruction) # drop treat + appreciate (implement streaming)
         print("ending reward")
-        time.sleep(3) # give time for grabbing the treat and prepare for the next instruction
+        time.sleep(7) # give time for grabbing the treat and prepare for the next instruction
         is_followed = 0
         # hook() # sound effect to grab attention
         print("starting instruction")
